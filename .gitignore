@@ -17,9 +17,12 @@ env/
 .ipynb_checkpoints/
 *.ipynb
 
-# Data
-data/c2/
-data/splits/
+# Data (all image data — too large for git)
+data/
+
+# Misc large/temp directories
+water_quality_temp/
+code/
 
 # Model checkpoints
 checkpoints/
