@@ -62,10 +62,11 @@ def save_size_availability(rows: list[dict[str, str]], output: Path) -> None:
     plt.close(fig)
 
 
-def pick_examples(rows: list[dict[str, str]], images_dir: Path, max_examples: int) -> list[dict[str, str]]:
+def pick_examples(rows: list[dict[str, str]], images_dir: Path, max_examples: int, require_size: bool) -> list[dict[str, str]]:
+    candidates = [row for row in rows if (row.get("size") or "").strip()] if require_size else rows
     preferred: list[dict[str, str]] = []
     seen_morphologies: set[str] = set()
-    for row in rows:
+    for row in candidates:
         file_name = row.get("file_names") or ""
         morphology = (row.get("morphology") or "").strip()
         if not file_name or not morphology or morphology in seen_morphologies:
@@ -76,7 +77,7 @@ def pick_examples(rows: list[dict[str, str]], images_dir: Path, max_examples: in
         if len(preferred) >= max_examples:
             return preferred
 
-    for row in rows:
+    for row in candidates:
         file_name = row.get("file_names") or ""
         if file_name and (images_dir / file_name).exists() and row not in preferred:
             preferred.append(row)
@@ -85,8 +86,14 @@ def pick_examples(rows: list[dict[str, str]], images_dir: Path, max_examples: in
     return preferred
 
 
-def make_contact_sheet(rows: list[dict[str, str]], images_dir: Path, output: Path, max_examples: int = 12) -> None:
-    selected = pick_examples(rows, images_dir, max_examples)
+def make_contact_sheet(
+    rows: list[dict[str, str]],
+    images_dir: Path,
+    output: Path,
+    max_examples: int = 12,
+    require_size: bool = False,
+) -> None:
+    selected = pick_examples(rows, images_dir, max_examples, require_size=require_size)
     if not selected:
         print(f"No example images found in {images_dir}; skipping contact sheet.")
         return
@@ -165,6 +172,13 @@ def main() -> int:
     save_barh(value_counts([row for row in rows if (row.get("size") or "").strip()], "size"), "Top Nonblank Particle-size Values", args.output_dir / "size_counts.png", top_n=15)
     save_size_availability(rows, args.output_dir / "size_availability.png")
     make_contact_sheet(rows, args.images_dir, args.output_dir / "example_images.jpg", max_examples=args.max_examples)
+    make_contact_sheet(
+        rows,
+        args.images_dir,
+        args.output_dir / "size_labeled_examples.jpg",
+        max_examples=args.max_examples,
+        require_size=True,
+    )
     write_summary(rows, args.output_dir / "metadata_summary.md")
     print(f"Wrote metadata visualizations to {args.output_dir}")
     return 0

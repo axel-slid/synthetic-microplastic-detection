@@ -129,6 +129,12 @@ only the example-image sheet is skipped.
 
 ![Example images from the Image Explorer](docs/assets/example_images.jpg)
 
+### Size-labeled Example Images
+
+These examples are restricted to records where the `size` field is nonblank.
+
+![Size-labeled example images from the Image Explorer](docs/assets/size_labeled_examples.jpg)
+
 ## Metadata and Scale
 
 The primary metadata table has these columns:
