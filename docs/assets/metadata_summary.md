@@ -1,24 +1,20 @@
-# Metadata Summary
+# Focused Metadata Summary
 
-- image records: 10,182
-- unique file names: 10,182
-- records with nonblank `size`: 822
+- total image records: 10,182
+- records with particle-size metadata: 822
+- records without particle-size metadata: 9,360
 
-## Top Citations
+## Polymers Among Size-labeled Records
 
-- SCCWRP Interlaboratory Comparison 2020-2022: 9,390
-- Lattin and Moore 2020, Interlab Comparison Study Data, Moore Institute for Plastic Pollution Research: 711
-- Fadare and Conkle 2022, Taxonomy of Environmentally Weathered Microplastics: 52
-- Kukkola et al. 2022: 29
+- (blank): 770
+- Polyolefins (polyalkenes): 48
+- Polystyrenes (polyphenylethylenes, -methylstyrene): 2
+- Other: 1
+- Polyamides (polylactams): 1
 
-## Top Morphologies
+## Polymer Montages
 
-- (blank): 4,261
-- Sphere: 2,202
-- Fragment: 2,193
-- Fiber: 1,451
-- Film: 33
-- Pellet: 31
-- Foam: 8
-- Other: 2
-- Fiber BUNDLE: 1
+- Other: 1 records, `polymer_montage_other.jpg`
+- Polyamides (polylactams): 1 records, `polymer_montage_polyamides_polylactams.jpg`
+- Polyolefins (polyalkenes): 48 records, `polymer_montage_polyolefins_polyalkenes.jpg`
+- Polystyrenes (polyphenylethylenes, -methylstyrene): 2 records, `polymer_montage_polystyrenes_polyphenylethylenes_methylstyrene.jpg`
