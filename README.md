@@ -56,10 +56,14 @@ This creates:
 
 ![Polymers among records with particle-size metadata](docs/assets/size_labeled_polymer_counts.png)
 
-Most records with particle-size metadata have a blank polymer field. The
-montages below show only the nonblank polymer categories.
+Most records with particle-size metadata have a blank polymer field, so the
+blank class is shown as its own montage.
 
 ## 3. Polymer Montages for Size-labeled Records
+
+### Blank Polymer
+
+![Blank polymer montage](docs/assets/polymer_montage_blank.jpg)
 
 ### Polyamides
 

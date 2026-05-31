@@ -14,6 +14,7 @@
 
 ## Polymer Montages
 
+- (blank): 770 records, `polymer_montage_blank.jpg`
 - Other: 1 records, `polymer_montage_other.jpg`
 - Polyamides (polylactams): 1 records, `polymer_montage_polyamides_polylactams.jpg`
 - Polyolefins (polyalkenes): 48 records, `polymer_montage_polyolefins_polyalkenes.jpg`

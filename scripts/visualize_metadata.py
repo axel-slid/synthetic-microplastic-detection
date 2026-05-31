@@ -147,13 +147,10 @@ def save_montage(rows: list[dict[str, str]], images_dir: Path, output: Path, tit
 
 def save_polymer_montages(rows: list[dict[str, str]], images_dir: Path, output_dir: Path, max_examples: int) -> list[tuple[str, Path, int]]:
     labeled = size_labeled(rows)
-    polymers = sorted(
-        {row.get("polymer", "").strip() for row in labeled if row.get("polymer", "").strip()},
-        key=str.casefold,
-    )
+    polymers = sorted({(row.get("polymer") or "").strip() or "(blank)" for row in labeled}, key=str.casefold)
     outputs: list[tuple[str, Path, int]] = []
     for polymer in polymers:
-        polymer_rows = [row for row in labeled if (row.get("polymer") or "").strip() == polymer]
+        polymer_rows = [row for row in labeled if ((row.get("polymer") or "").strip() or "(blank)") == polymer]
         path = output_dir / f"polymer_montage_{safe_name(polymer)}.jpg"
         if save_montage(
             polymer_rows,
