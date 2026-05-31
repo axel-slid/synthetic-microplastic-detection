@@ -1,8 +1,8 @@
 # Microplastic Image Explorer Dataset Tools
 
 Code for downloading the OpenAnalysis / Moore Institute Microplastic Image
-Explorer dataset, filtering its metadata, and visualizing records that include
-particle-size metadata.
+Explorer dataset, filtering its metadata, and visualizing the morphology of
+records that include particle-size metadata.
 
 Dataset source: <https://www.openanalysis.org/microplastic_image_explorer/>
 
@@ -33,7 +33,7 @@ python scripts/download_image_explorer.py \
   --workers 24
 ```
 
-## Visualize Particle-size Metadata
+## Visualize Size-labeled Morphology
 
 ```bash
 python scripts/visualize_metadata.py \
@@ -45,53 +45,66 @@ python scripts/visualize_metadata.py \
 This creates:
 
 - particle-size metadata availability
-- polymer counts among records with particle-size metadata
-- one montage for each nonblank polymer among records with particle-size metadata
+- morphology counts among records with particle-size metadata
+- one montage for each morphology among records with particle-size metadata
 
 ## 1. Particle-size Metadata Availability
 
 ![Particle-size metadata availability](docs/assets/size_availability.png)
 
-## 2. Polymers Among Records With Particle-size Metadata
+## 2. Morphologies Among Records With Particle-size Metadata
 
-![Polymers among records with particle-size metadata](docs/assets/size_labeled_polymer_counts.png)
+![Morphologies among records with particle-size metadata](docs/assets/size_labeled_morphology_counts.png)
 
-Most records with particle-size metadata have a blank polymer field, so the
-blank class is shown as its own montage.
+## 3. Morphology Montages for Size-labeled Records
 
-## 3. Polymer Montages for Size-labeled Records
+### Fiber
 
-### Blank Polymer
+![Fiber montage](docs/assets/morphology_montage_fiber.jpg)
 
-![Blank polymer montage](docs/assets/polymer_montage_blank.jpg)
+### Fragment
 
-### Polyamides
+![Fragment montage](docs/assets/morphology_montage_fragment.jpg)
 
-![Polyamides montage](docs/assets/polymer_montage_polyamides_polylactams.jpg)
+### Sphere
 
-### Polyolefins
+![Sphere montage](docs/assets/morphology_montage_sphere.jpg)
 
-![Polyolefins montage](docs/assets/polymer_montage_polyolefins_polyalkenes.jpg)
+### Film
 
-### Polystyrenes
+![Film montage](docs/assets/morphology_montage_film.jpg)
 
-![Polystyrenes montage](docs/assets/polymer_montage_polystyrenes_polyphenylethylenes_methylstyrene.jpg)
+### Pellet
+
+![Pellet montage](docs/assets/morphology_montage_pellet.jpg)
+
+### Blank Morphology
+
+![Blank morphology montage](docs/assets/morphology_montage_blank.jpg)
+
+### Foam
+
+![Foam montage](docs/assets/morphology_montage_foam.jpg)
 
 ### Other
 
-![Other polymer montage](docs/assets/polymer_montage_other.jpg)
+![Other morphology montage](docs/assets/morphology_montage_other.jpg)
+
+### Fiber Bundle
+
+![Fiber bundle montage](docs/assets/morphology_montage_fiber_bundle.jpg)
 
 ## Filter Metadata
 
-Example: filter records with particle-size metadata and a nonblank polymer:
+Example: filter fiber records with particle-size metadata:
 
 ```bash
 python scripts/filter_metadata.py \
   --metadata data/microplastic_image_explorer/metadata/image_metadata.csv \
   --has-size \
-  --polymer poly \
-  --output outputs/size_labeled_polymer_records.csv \
-  --write-urls outputs/size_labeled_polymer_urls.txt
+  --morphology fiber \
+  --output outputs/size_labeled_fibers.csv \
+  --write-urls outputs/size_labeled_fiber_urls.txt
 ```
 
 ## Scale Note

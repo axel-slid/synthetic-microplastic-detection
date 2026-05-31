@@ -4,18 +4,26 @@
 - records with particle-size metadata: 822
 - records without particle-size metadata: 9,360
 
-## Polymers Among Size-labeled Records
+## Morphologies Among Size-labeled Records
 
-- (blank): 770
-- Polyolefins (polyalkenes): 48
-- Polystyrenes (polyphenylethylenes, -methylstyrene): 2
-- Other: 1
-- Polyamides (polylactams): 1
+- Fiber: 337
+- Fragment: 240
+- Sphere: 150
+- Film: 33
+- Pellet: 31
+- (blank): 20
+- Foam: 8
+- Other: 2
+- Fiber BUNDLE: 1
 
-## Polymer Montages
+## Morphology Montages
 
-- (blank): 770 records, `polymer_montage_blank.jpg`
-- Other: 1 records, `polymer_montage_other.jpg`
-- Polyamides (polylactams): 1 records, `polymer_montage_polyamides_polylactams.jpg`
-- Polyolefins (polyalkenes): 48 records, `polymer_montage_polyolefins_polyalkenes.jpg`
-- Polystyrenes (polyphenylethylenes, -methylstyrene): 2 records, `polymer_montage_polystyrenes_polyphenylethylenes_methylstyrene.jpg`
+- Fiber: 337 records, `morphology_montage_fiber.jpg`
+- Fragment: 240 records, `morphology_montage_fragment.jpg`
+- Sphere: 150 records, `morphology_montage_sphere.jpg`
+- Film: 33 records, `morphology_montage_film.jpg`
+- Pellet: 31 records, `morphology_montage_pellet.jpg`
+- (blank): 20 records, `morphology_montage_blank.jpg`
+- Foam: 8 records, `morphology_montage_foam.jpg`
+- Other: 2 records, `morphology_montage_other.jpg`
+- Fiber BUNDLE: 1 records, `morphology_montage_fiber_bundle.jpg`

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Visualize particle-size metadata and polymers for Microplastic Image Explorer."""
+"""Visualize morphology for size-labeled Microplastic Image Explorer records."""
 
 from __future__ import annotations
 
@@ -54,15 +54,15 @@ def save_size_availability(rows: list[dict[str, str]], output: Path) -> None:
     plt.close(fig)
 
 
-def save_size_labeled_polymer_counts(rows: list[dict[str, str]], output: Path) -> None:
-    counts = value_counts(size_labeled(rows), "polymer")
+def save_size_labeled_morphology_counts(rows: list[dict[str, str]], output: Path) -> None:
+    counts = value_counts(size_labeled(rows), "morphology")
     items = counts.most_common()
     labels = [wrapped(label) for label, _ in reversed(items)]
     values = [count for _, count in reversed(items)]
 
-    fig, ax = plt.subplots(figsize=(10, max(4.5, 0.65 * len(items) + 1.4)))
+    fig, ax = plt.subplots(figsize=(10, max(5.0, 0.58 * len(items) + 1.4)))
     ax.barh(labels, values, color="#2f6f73")
-    ax.set_title("Polymers Among Records With Particle-size Metadata", loc="left", fontsize=15, weight="bold")
+    ax.set_title("Morphologies Among Records With Particle-size Metadata", loc="left", fontsize=15, weight="bold")
     ax.set_xlabel("Image records with nonblank size")
     ax.grid(axis="x", alpha=0.25)
     ax.spines[["top", "right", "left"]].set_visible(False)
@@ -131,13 +131,9 @@ def save_montage(rows: list[dict[str, str]], images_dir: Path, output: Path, tit
             image.thumbnail((thumb_w, thumb_h), Image.LANCZOS)
             sheet.paste(image, (x + (thumb_w - image.width) // 2, y + (thumb_h - image.height) // 2))
 
-        label_parts = [
-            (row.get("morphology") or "morphology blank").strip() or "morphology blank",
-            (row.get("color") or "color blank").strip() or "color blank",
-            (row.get("size") or "size blank").strip() or "size blank",
-            row["file_names"],
-        ]
-        label = f"{label_parts[0]} | {label_parts[1]}\n{label_parts[2]}\n{label_parts[3]}"
+        color = (row.get("color") or "color blank").strip() or "color blank"
+        size = (row.get("size") or "size blank").strip() or "size blank"
+        label = f"{color} | {size}\n{row['file_names']}"
         draw.text((x + 8, y + thumb_h + 6), label, fill="#222222", font=font)
 
     output.parent.mkdir(parents=True, exist_ok=True)
@@ -145,21 +141,21 @@ def save_montage(rows: list[dict[str, str]], images_dir: Path, output: Path, tit
     return True
 
 
-def save_polymer_montages(rows: list[dict[str, str]], images_dir: Path, output_dir: Path, max_examples: int) -> list[tuple[str, Path, int]]:
+def save_morphology_montages(rows: list[dict[str, str]], images_dir: Path, output_dir: Path, max_examples: int) -> list[tuple[str, Path, int]]:
     labeled = size_labeled(rows)
-    polymers = sorted({(row.get("polymer") or "").strip() or "(blank)" for row in labeled}, key=str.casefold)
+    morphologies = [morphology for morphology, _ in value_counts(labeled, "morphology").most_common()]
     outputs: list[tuple[str, Path, int]] = []
-    for polymer in polymers:
-        polymer_rows = [row for row in labeled if ((row.get("polymer") or "").strip() or "(blank)") == polymer]
-        path = output_dir / f"polymer_montage_{safe_name(polymer)}.jpg"
+    for morphology in morphologies:
+        morphology_rows = [row for row in labeled if ((row.get("morphology") or "").strip() or "(blank)") == morphology]
+        path = output_dir / f"morphology_montage_{safe_name(morphology)}.jpg"
         if save_montage(
-            polymer_rows,
+            morphology_rows,
             images_dir,
             path,
-            title=f"{polymer} ({len(polymer_rows):,} size-labeled records)",
+            title=f"{morphology} ({len(morphology_rows):,} size-labeled records)",
             max_examples=max_examples,
         ):
-            outputs.append((polymer, path, len(polymer_rows)))
+            outputs.append((morphology, path, len(morphology_rows)))
     return outputs
 
 
@@ -172,14 +168,14 @@ def write_summary(rows: list[dict[str, str]], montages: list[tuple[str, Path, in
         f"- records with particle-size metadata: {len(labeled):,}",
         f"- records without particle-size metadata: {len(rows) - len(labeled):,}",
         "",
-        "## Polymers Among Size-labeled Records",
+        "## Morphologies Among Size-labeled Records",
         "",
     ]
-    for polymer, count in value_counts(labeled, "polymer").most_common():
-        lines.append(f"- {polymer}: {count:,}")
-    lines.extend(["", "## Polymer Montages", ""])
-    for polymer, path, count in montages:
-        lines.append(f"- {polymer}: {count:,} records, `{path.name}`")
+    for morphology, count in value_counts(labeled, "morphology").most_common():
+        lines.append(f"- {morphology}: {count:,}")
+    lines.extend(["", "## Morphology Montages", ""])
+    for morphology, path, count in montages:
+        lines.append(f"- {morphology}: {count:,} records, `{path.name}`")
     output.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
@@ -198,10 +194,10 @@ def main() -> int:
     args.output_dir.mkdir(parents=True, exist_ok=True)
 
     save_size_availability(rows, args.output_dir / "size_availability.png")
-    save_size_labeled_polymer_counts(rows, args.output_dir / "size_labeled_polymer_counts.png")
-    montages = save_polymer_montages(rows, args.images_dir, args.output_dir, max_examples=args.max_examples)
+    save_size_labeled_morphology_counts(rows, args.output_dir / "size_labeled_morphology_counts.png")
+    montages = save_morphology_montages(rows, args.images_dir, args.output_dir, max_examples=args.max_examples)
     write_summary(rows, montages, args.output_dir / "metadata_summary.md")
-    print(f"Wrote focused metadata visualizations to {args.output_dir}")
+    print(f"Wrote morphology-focused metadata visualizations to {args.output_dir}")
     return 0
 
 
