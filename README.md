@@ -52,6 +52,24 @@ microplastic/
 
 ---
 
+## External dataset download
+
+To download the full OpenAnalysis / Moore Institute Microplastic Image Explorer
+dataset used as an upstream image source, run:
+
+```bash
+python scripts/download_microplastic_image_explorer.py \
+    --output-dir data/microplastic_image_explorer \
+    --workers 24
+```
+
+This downloads 10,182 image files plus the app metadata bundle and writes
+checksum manifests under `data/microplastic_image_explorer/manifests/`.
+See `docs/microplastic_image_explorer_download.md` for the complete process,
+source URLs, expected counts, and verification steps.
+
+---
+
 ## Pipeline overview
 
 ```
