@@ -52,6 +52,44 @@ microplastic/
 
 ---
 
+## Microplastic Image Explorer dataset
+
+This repository includes utilities for the OpenAnalysis / Moore Institute
+Microplastic Image Explorer dataset.
+
+Download only the metadata bundle:
+
+```bash
+python scripts/download_image_explorer.py \
+    --output-dir data/microplastic_image_explorer
+```
+
+Download metadata and all Image Explorer images:
+
+```bash
+python scripts/download_image_explorer.py \
+    --output-dir data/microplastic_image_explorer \
+    --download-images \
+    --workers 24
+```
+
+Filter metadata and optionally download a subset:
+
+```bash
+python scripts/filter_metadata.py \
+    --metadata data/microplastic_image_explorer/metadata/image_metadata.csv \
+    --morphology fiber \
+    --has-size \
+    --output outputs/fibers_with_size.csv \
+    --write-urls outputs/fibers_with_size_urls.txt
+```
+
+See `docs/microplastic_image_explorer_metadata.md` for source URLs, expected
+counts, metadata fields, and how to handle particle-size versus image-scale
+metadata.
+
+---
+
 ## Pipeline overview
 
 ```
