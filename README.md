@@ -7,6 +7,16 @@ The repository is source-focused. Large local datasets, generated image batches,
 training runs, model checkpoints, and compiled artifacts are intentionally
 excluded from git.
 
+## Figures
+
+### Pipeline
+
+![Microplastic synthetic generation and segmentation pipeline](images/fig_pipeline.png)
+
+### 3x3 Qualitative Grid
+
+![3x3 qualitative segmentation grid](images/fig_qualitative_grid.png)
+
 ## Repository Layout
 
 - `scripts/`: dataset download, metadata filtering, visualization, and figure helpers.
