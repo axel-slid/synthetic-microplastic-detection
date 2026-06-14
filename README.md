@@ -1,17 +1,7 @@
-# Synthetic Microplastic Detection
+# Microplastic Identification Using AI-Driven Image Segmentation [Replication code]
+with Synthetic Ecological Context
 
-This repository contains tools and experiment code for microplastic image
-metadata exploration, synthetic data generation, and segmentation benchmarking.
-
-The repository is source-focused. Large local datasets, generated image batches,
-training runs, model checkpoints, and compiled artifacts are intentionally
-excluded from git.
-
-## Figures
-
-### Workflow Complex Variation
-
-![Workflow complex variation 001](images/workflow_complex_variation_001.png)
+![](images/workflow_complex_variation_001.png)
 
 ### 3x3 Image-Varied Inference Grid
 
