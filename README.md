@@ -9,13 +9,13 @@ excluded from git.
 
 ## Figures
 
-### Pipeline
+### Workflow Complex Variation
 
-![Microplastic synthetic generation and segmentation pipeline](images/fig_pipeline.png)
+![Workflow complex variation 001](images/workflow_complex_variation_001.png)
 
-### 3x3 Qualitative Grid
+### 3x3 Image-Varied Inference Grid
 
-![3x3 qualitative segmentation grid](images/fig_qualitative_grid.png)
+![3x3 image-varied inference grid 001](images/inference_grid_3x3_image_varied_001.png)
 
 ## Repository Layout
 
