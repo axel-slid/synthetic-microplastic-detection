@@ -12,9 +12,9 @@ from PIL import Image, ImageDraw, ImageFont
 
 
 ROOT = Path(__file__).resolve().parents[2]
-CODEX = ROOT / "codex"
-DATA = CODEX / "data"
-RESULTS = CODEX / "results"
+BENCHMARK = ROOT / "benchmark"
+DATA = BENCHMARK / "data"
+RESULTS = BENCHMARK / "results"
 OUT = ROOT / "images"
 OUT.mkdir(parents=True, exist_ok=True)
 

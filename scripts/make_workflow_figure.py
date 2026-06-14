@@ -10,13 +10,13 @@ ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "overleaf_microplastic_project" / "images" / "fig_workflow_complex.png"
 
 SAMPLES = {
-    "cohort1_img": ROOT / "codex" / "data" / "c1" / "imgs" / "117.png",
-    "cohort1_mask": ROOT / "codex" / "data" / "c1" / "masks" / "117.png",
-    "cohort2_img": ROOT / "codex" / "data" / "c2" / "imgs" / "0012.png",
-    "synthetic_img": ROOT / "codex" / "data" / "c2" / "c2_sd2_inpaint" / "generated_04561.png",
-    "synthetic_mask": ROOT / "codex" / "data" / "c2" / "c2_sd2_inpaint_masks" / "generated_04561.png",
-    "cohort3_img": ROOT / "codex" / "data" / "c3" / "imgs" / "054.png",
-    "cohort3_mask": ROOT / "codex" / "data" / "c3" / "masks" / "054.png",
+    "cohort1_img": ROOT / "benchmark" / "data" / "c1" / "imgs" / "117.png",
+    "cohort1_mask": ROOT / "benchmark" / "data" / "c1" / "masks" / "117.png",
+    "cohort2_img": ROOT / "benchmark" / "data" / "c2" / "imgs" / "0012.png",
+    "synthetic_img": ROOT / "benchmark" / "data" / "c2" / "c2_sd2_inpaint" / "generated_04561.png",
+    "synthetic_mask": ROOT / "benchmark" / "data" / "c2" / "c2_sd2_inpaint_masks" / "generated_04561.png",
+    "cohort3_img": ROOT / "benchmark" / "data" / "c3" / "imgs" / "054.png",
+    "cohort3_mask": ROOT / "benchmark" / "data" / "c3" / "masks" / "054.png",
 }
 
 INK = "#202a35"

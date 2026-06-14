@@ -13,9 +13,9 @@ Objective: execute the benchmark plan and produce a complete 10-15 page LaTeX sc
 | Relevant citations are present | 20 `\bibitem` references, including microplastic analysis, Dils et al., GANs, diffusion, LaMa, MAT, U-Net, DeepLabV3, FPN, SegFormer, and YOLO11 |
 | Dils et al. is used as the GAN reference | Rendered PDF includes Dils et al. and `arXiv:2410.19604`; paper cites F1 0.82 to 0.91 and 68% expert reader-study result |
 | Plots are included | `images/fig_dataset_counts.pdf`, `fig_mask_coverage.pdf`, `fig_qualitative_grid.png`, `fig_pipeline.pdf`, `fig_run_matrix.pdf`, `fig_pilot_smoke_metrics.pdf` |
-| Current data audit is represented | `codex/results/reports/data_validation.csv`, C3-clean policy in `codex/configs/benchmark.yaml`, and paper tables/figures |
-| 5+ generation by 5+ segmentation benchmark is configured | `codex/results/manifests/run_matrix.csv` has 105 currently available runs; config defines 7 generation/training conditions and 7 segmenters for 147 full runs after new generation folders exist |
-| Paper package verifier passes | `python codex/scripts/verify_paper.py` reports 10 pages, 4050 rendered words, 20 references |
+| Current data audit is represented | `benchmark/results/reports/data_validation.csv`, C3-clean policy in `benchmark/configs/benchmark.yaml`, and paper tables/figures |
+| 5+ generation by 5+ segmentation benchmark is configured | `benchmark/results/manifests/run_matrix.csv` has 105 currently available runs; config defines 7 generation/training conditions and 7 segmenters for 147 full runs after new generation folders exist |
+| Paper package verifier passes | `python benchmark/scripts/verify_paper.py` reports 10 pages, 4050 rendered words, 20 references |
 
 ## Not Complete / Blocked
 
@@ -28,7 +28,7 @@ Objective: execute the benchmark plan and produce a complete 10-15 page LaTeX sc
 ## Commands Used For Verification
 
 ```bash
-python codex/scripts/verify_paper.py
+python benchmark/scripts/verify_paper.py
 pdfinfo paper.pdf
 pdftotext paper.pdf -
 nvidia-smi --query-gpu=name,memory.total --format=csv,noheader

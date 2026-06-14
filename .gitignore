@@ -19,14 +19,15 @@ env/
 
 # Data (all image data is too large for git)
 data/
-codex/data/
+benchmark/data/
 
 # Misc large/temp directories
 water_quality_temp/
 generated/
-codex/results/
-codex/runs/
-codex/locks/
+benchmark/results/
+benchmark/runs/
+benchmark/locks/
+benchmark/legacy_workspace/
 
 # Model checkpoints
 checkpoints/
@@ -45,7 +46,6 @@ logs/
 **/viz/
 code/**/figures/
 code/**/comparison_output/
-codex/codex/results/
 
 # Training data and generated samples nested under source directories
 **/split_data/

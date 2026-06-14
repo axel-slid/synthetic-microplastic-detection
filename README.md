@@ -21,38 +21,94 @@ excluded from git.
 
 - `scripts/`: dataset download, metadata filtering, visualization, and figure helpers.
 - `docs/`: dataset notes and generated documentation assets.
-- `codex/microplastic_benchmark/`: reusable benchmark package for data loading,
+- `benchmark/microplastic_benchmark/`: reusable benchmark package for data loading,
   generation, model construction, training, metrics, and evaluation.
-- `codex/configs/`: benchmark experiment matrices and model settings.
-- `codex/scripts/`: benchmark orchestration, training, evaluation, and reporting scripts.
+- `benchmark/configs/`: benchmark experiment matrices and model settings.
+- `benchmark/scripts/`: benchmark orchestration, training, evaluation, and reporting scripts.
 - `code/`: earlier stable diffusion, GAN, preprocessing, and segmentation scripts.
 - `tests/`: smoke tests for the Stable Diffusion training pipeline.
 - `images/` and `overleaf_microplastic_project/`: paper figures and manuscript source.
-- `model_settings_full.txt`: consolidated Stable Diffusion and segmentation model settings.
+- `model_settings.txt`: concise settings log for Stable Diffusion and the six semantic
+  segmentation models used in the study.
 
-## Install
+## Reproduce The Study
 
-Basic metadata tooling:
+1. Clone this repository and install the Python dependencies:
 
-```bash
-python -m pip install -r requirements.txt
-```
+   ```bash
+   git clone https://github.com/axel-slid/synthetic-microplastic-detection.git
+   cd synthetic-microplastic-detection
+   python -m pip install -r requirements.txt
+   python -m pip install -r benchmark/requirements.txt
+   python -m pip install -e benchmark
+   ```
 
-Benchmark package:
+2. Download the project data from Harvard Dataverse:
 
-```bash
-python -m pip install -r codex/requirements.txt
-python -m pip install -e codex
-```
+   <https://dataverse.harvard.edu/dataverse/Microplastic-Segmentation-GAN/>
 
-GPU training workflows require CUDA-compatible PyTorch plus the model/data
-assets referenced by the configs.
+   Place the extracted benchmark data under `benchmark/data/` so the config paths
+   resolve as `benchmark/data/c1`, `benchmark/data/c2`, and `benchmark/data/c3`.
+
+3. Prepare and validate the benchmark manifests:
+
+   ```bash
+   cd benchmark
+   python scripts/validate_data.py --config configs/benchmark.yaml
+   python scripts/prepare_manifests.py --config configs/benchmark.yaml
+   python scripts/plan_runs.py --config configs/benchmark.yaml --available-only
+   ```
+
+4. Run the full semantic replication workflow:
+
+   ```bash
+   ./scripts/reproduce_semantic_study.sh
+   ```
+
+   This validates data, prepares manifests, plans available runs, trains the
+   semantic models, evaluates checkpoints, aggregates metrics, and regenerates
+   paper assets.
+
+5. Or train the semantic segmentation models manually for the planned runs:
+
+   ```bash
+   python scripts/launch_benchmark.py \
+     --config configs/benchmark.yaml \
+     --run-matrix results/manifests/run_matrix.csv \
+     --family semantic
+   ```
+
+   To run one checkpoint at a time:
+
+   ```bash
+   python scripts/train_segmenter.py \
+     --config configs/benchmark.yaml \
+     --run-id baseline_c1__monai_unet__seed13
+   ```
+
+6. Evaluate completed checkpoints on the locked C3-clean test set:
+
+   ```bash
+   python scripts/evaluate_registry.py --config configs/benchmark.yaml
+   python scripts/aggregate_results.py
+   ```
+
+7. Regenerate paper assets and reports:
+
+   ```bash
+   python scripts/make_paper_assets.py
+   python scripts/make_journal_paper_assets.py
+   python scripts/verify_paper.py
+   ```
+
+The exact model settings used for the study are summarized in
+[`model_settings.txt`](model_settings.txt). GPU training workflows require
+CUDA-compatible PyTorch plus the model/data assets referenced by the configs.
 
 ## Dataset Utilities
 
-Primary project data are available from Harvard Dataverse:
-
-<https://dataverse.harvard.edu/dataverse/Microplastic-Segmentation-GAN/>
+The top-level `scripts/` directory also includes utilities for the public
+Microplastic Image Explorer metadata workflow.
 
 Download metadata only:
 
@@ -70,57 +126,13 @@ python scripts/download_image_explorer.py \
   --workers 24
 ```
 
-Visualize size-labeled morphology records:
-
-```bash
-python scripts/visualize_metadata.py \
-  --metadata data/microplastic_image_explorer/metadata/image_metadata.csv \
-  --images-dir data/microplastic_image_explorer/images \
-  --output-dir docs/assets
-```
-
-## Benchmark Workflow
-
-From `codex/`:
-
-```bash
-python scripts/validate_data.py --config configs/benchmark.yaml
-python scripts/prepare_manifests.py --config configs/benchmark.yaml
-python scripts/plan_runs.py --config configs/benchmark.yaml --available-only
-python scripts/smoke_test.py --config configs/benchmark.yaml
-```
-
-Train a semantic segmentation run:
-
-```bash
-python scripts/train_segmenter.py \
-  --config configs/benchmark.yaml \
-  --run-id baseline_c1__monai_unet__seed13
-```
-
-Train a YOLO segmentation run:
-
-```bash
-python scripts/train_yolo_segmenter.py \
-  --config configs/benchmark.yaml \
-  --run-id baseline_c1__yolo11m_seg__seed13 \
-  --weights yolo11m-seg.pt
-```
-
-Evaluate completed PyTorch semantic checkpoints:
-
-```bash
-python scripts/evaluate_registry.py --config configs/benchmark.yaml
-python scripts/aggregate_results.py
-```
-
 ## Data And Artifact Policy
 
 The following are ignored because they are large or machine-specific:
 
-- `data/`, `codex/data/`
+- `data/`, `benchmark/data/`
 - `generated/`
-- `codex/results/`, `codex/runs/`
+- `benchmark/results/`, `benchmark/runs/`
 - checkpoints and weights such as `*.pt`, `*.pth`, `*.ckpt`, `*.safetensors`
 - split datasets, generated samples, logs, caches, Office exports, and compiled PDFs
 

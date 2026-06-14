@@ -316,14 +316,14 @@ def main() -> None:
     parser.add_argument("--paper", default=str(DEFAULT_PAPER))
     args = parser.parse_args()
 
-    aggregate_path = ROOT / "codex" / args.aggregate
+    aggregate_path = ROOT / "benchmark" / args.aggregate
     frame = read_aggregate(
         aggregate_path,
         args.expected_runs,
         {"condition", "model", "seed", "dice_mean", "iou_mean"},
     )
 
-    sd_path = ROOT / "codex" / args.sd_aggregate
+    sd_path = ROOT / "benchmark" / args.sd_aggregate
     sd_frame = None
     if sd_path.exists():
         sd_frame = read_aggregate(
@@ -332,7 +332,7 @@ def main() -> None:
             {"condition", "model", "seed", "dice_mean", "iou_mean"},
         )
 
-    detection_path = ROOT / "codex" / args.detection_aggregate
+    detection_path = ROOT / "benchmark" / args.detection_aggregate
     detection_frame = None
     if detection_path.exists():
         detection_frame = read_aggregate(

@@ -8,9 +8,9 @@ import pandas as pd
 
 
 ROOT = Path(__file__).resolve().parents[2]
-CODEX = ROOT / "codex"
-REPORTS = CODEX / "results" / "reports" / "c2_inpainting_5x5"
-MATRIX = CODEX / "results" / "manifests" / "c2_inpainting_5x5" / "run_matrix.csv"
+BENCHMARK = ROOT / "benchmark"
+REPORTS = BENCHMARK / "results" / "reports" / "c2_inpainting_5x5"
+MATRIX = BENCHMARK / "results" / "manifests" / "c2_inpainting_5x5" / "run_matrix.csv"
 PAPER = ROOT / "overleaf_microplastic_project" / "main.tex"
 INCLUDE = ROOT / "overleaf_microplastic_project" / "c2_current_results.tex"
 

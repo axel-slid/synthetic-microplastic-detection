@@ -1,0 +1,136 @@
+# Model Settings Used In The Study
+
+This file intentionally lists only the model settings used for the study:
+Stable Diffusion for synthetic inpainting and the six semantic segmentation
+models. It does not include run logs, paths, results, checkpoints, YOLO
+detection/instance-segmentation settings, GAN settings, FLUX settings, or
+generated-file inventories.
+
+## Shared Study Settings
+
+- Image size: 512 x 512
+- Random seeds: 13, 37, 101
+- Primary evaluation split: locked C3-clean ecological test set
+- Primary threshold for binary masks: 0.5
+- Semantic training loss: Dice plus binary cross entropy
+- Optimizer: AdamW
+- Batch size: 8
+- Maximum epochs: 80
+- Learning rate: 0.0001
+- Weight decay: 0.00001
+- Early stopping patience: 15 epochs
+- AMP: enabled when CUDA is available
+- Synthetic split: 80 percent train, 20 percent validation
+
+## Stable Diffusion Inpainting Model
+
+- Role: synthetic ecological microplastic image generation
+- Generator family: Stable Diffusion inpainting
+- Primary model ID: diffusers/stable-diffusion-xl-1.0-inpainting-0.1
+- Stable Diffusion 2 inpainting model ID: stabilityai/stable-diffusion-2-inpainting
+- Image size: 512 x 512
+- Positive prompt, SDXL inpainting:
+  "a realistic microscope ecological water sample containing one visible translucent colored microplastic fiber or fragment inside the masked region, natural debris, sharp focus"
+- Negative prompt, SDXL inpainting:
+  "cartoon, illustration, fake texture, text, watermark, blurry, unchanged background, empty mask, pipe, thick tube"
+- SDXL guidance scale: 7.0
+- SDXL inference steps: 40
+- SDXL strength: 0.99
+- SD2 guidance scale: 7.5
+- SD2 inference steps: 45
+- SD2 strength: 0.99
+- Seeded object initialization: true
+- Seeded object mix: 0.65
+- Diffusion blend: true
+- Diffusion mask mode: full
+- Inpaint mask dilation: 4 px
+- Reject low-change generations: true
+- Minimum masked MAD: 12.0
+- Minimum changed-pixel fraction: 0.35
+- Minimum background masked MAD: 20.0
+- Minimum background changed-pixel fraction: 0.50
+- Maximum generation attempt multiplier: 12
+- Insertion area fraction: 0.006 to 0.05
+- Object opacity: 0.95
+- Alpha feather radius: 0.7
+- Color jitter:
+  - brightness: 0.85 to 1.15
+  - contrast: 0.90 to 1.15
+
+## Semantic Segmentation Models
+
+### 1. U-Net ResNet34
+
+- Name: smp_unet_resnet34
+- Family: semantic segmentation
+- Library: segmentation-models-pytorch
+- Architecture: Unet
+- Encoder: resnet34
+- Input channels: 3
+- Output classes: 1 binary foreground mask
+- Activation during training: logits
+- Evaluation activation: sigmoid followed by threshold 0.5
+
+### 2. U-Net++ EfficientNet-B4
+
+- Name: smp_unetpp_effb4
+- Family: semantic segmentation
+- Library: segmentation-models-pytorch
+- Architecture: UnetPlusPlus
+- Encoder: efficientnet-b4
+- Input channels: 3
+- Output classes: 1 binary foreground mask
+- Activation during training: logits
+- Evaluation activation: sigmoid followed by threshold 0.5
+
+### 3. DeepLabV3+ ResNet50
+
+- Name: smp_deeplabv3plus_resnet50
+- Family: semantic segmentation
+- Library: segmentation-models-pytorch
+- Architecture: DeepLabV3Plus
+- Encoder: resnet50
+- Input channels: 3
+- Output classes: 1 binary foreground mask
+- Activation during training: logits
+- Evaluation activation: sigmoid followed by threshold 0.5
+
+### 4. FPN EfficientNet-B3
+
+- Name: smp_fpn_effb3
+- Family: semantic segmentation
+- Library: segmentation-models-pytorch
+- Architecture: FPN
+- Encoder: efficientnet-b3
+- Input channels: 3
+- Output classes: 1 binary foreground mask
+- Activation during training: logits
+- Evaluation activation: sigmoid followed by threshold 0.5
+
+### 5. MONAI U-Net
+
+- Name: monai_unet
+- Family: semantic segmentation
+- Library: MONAI
+- Architecture: UNet
+- Spatial dimensions: 2
+- Input channels: 3
+- Output channels: 1 binary foreground mask
+- Channel widths: 32, 64, 128, 256, 512
+- Strides: 2, 2, 2, 2
+- Residual units: 2
+- Activation during training: logits
+- Evaluation activation: sigmoid followed by threshold 0.5
+
+### 6. SegFormer-B2
+
+- Name: segformer_b2
+- Family: semantic segmentation
+- Library: Hugging Face transformers
+- Model ID: nvidia/segformer-b2-finetuned-ade-512-512
+- Input channels: 3
+- Output classes after replacement head: 1 binary foreground mask
+- Training head: binary segmentation head replacing the pretrained ADE head
+- Output resizing: logits are upsampled to the 512 x 512 mask size
+- Activation during training: logits
+- Evaluation activation: sigmoid followed by threshold 0.5
