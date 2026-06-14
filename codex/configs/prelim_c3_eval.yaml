@@ -1,0 +1,52 @@
+project:
+  name: microplastic_prelim_c3_eval
+  seed_values: [13]
+  image_size: 512
+  num_workers: 4
+  device: cuda
+
+paths:
+  data_root: data
+  results_root: results/prelim_c3_eval
+  c1_imgs: data/c1/imgs
+  c1_masks: data/c1/masks
+  c1_masks_dilated: data/c1/masks_dilated
+  c2_imgs: data/c2/imgs
+  c3_imgs: data/c3/imgs
+  c3_masks: data/c3/masks
+  manifests: results/prelim_c3_eval/manifests
+  runs: results/prelim_c3_eval/runs
+  reports: results/prelim_c3_eval/reports
+
+c3_clean:
+  exclude_primary:
+    - "006.png"
+    - "026.png"
+    - "088.png"
+  leaked_c2_backgrounds:
+    - "0481.png"
+    - "0732.png"
+
+training:
+  batch_size: 8
+  epochs: 8
+  lr: 0.0001
+  weight_decay: 0.00001
+  patience: 3
+  threshold: 0.5
+  amp: true
+  synthetic_train_fraction: 0.8
+  synthetic_val_fraction: 0.2
+
+generation_conditions:
+  - name: prelim_c2_sdxl_inpaint
+    kind: generated_folder
+    imgs: data/c2/c2_sdxl_inpaint
+    masks: data/c2/c2_sdxl_inpaint_masks
+
+segmentation_models:
+  - name: smp_unet_resnet34
+    family: semantic
+    library: smp
+    architecture: Unet
+    encoder: resnet34

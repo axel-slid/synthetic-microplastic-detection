@@ -1,0 +1,67 @@
+project:
+  name: microplastic_object_seeded_small
+  seed_values: [13]
+  image_size: 512
+  num_workers: 4
+  device: cuda
+
+paths:
+  data_root: data
+  results_root: results
+  c1_imgs: data/c1/imgs
+  c1_masks: data/c1/masks
+  c1_masks_dilated: data/c1/masks_dilated
+  c2_imgs: data/c2/imgs
+  c3_imgs: data/c3/imgs
+  c3_masks: data/c3/masks
+  manifests: results/diagnostics/object_seeded_small/manifests
+  runs: results/diagnostics/object_seeded_small/runs
+  reports: results/diagnostics/object_seeded_small/reports
+
+c3_clean:
+  exclude_primary:
+    - "006.png"
+    - "026.png"
+    - "088.png"
+  leaked_c2_backgrounds:
+    - "0481.png"
+    - "0732.png"
+
+training:
+  batch_size: 6
+  epochs: 36
+  lr: 0.0001
+  weight_decay: 0.00001
+  patience: 10
+  threshold: 0.5
+  amp: true
+  synthetic_train_fraction: 0.8
+  synthetic_val_fraction: 0.2
+
+generation_conditions:
+  - name: object_seeded_fixed
+    kind: generated_folder
+    imgs: results/diagnostics/object_seeded_small/generated/imgs
+    masks: results/diagnostics/object_seeded_small/generated/masks
+
+segmentation_models:
+  - name: smp_unet_resnet34
+    family: semantic
+    library: smp
+    architecture: Unet
+    encoder: resnet34
+
+generation_methods:
+  object_seeded_fixed:
+    model_id: object_seeded_composite
+    prompt: "visible microscope microplastic object inserted into real C2 background"
+    seed_object: true
+    diffusion_blend: false
+    insertion_area_fraction: [0.003, 0.035]
+    object_opacity: 0.95
+    alpha_feather_radius: 0.7
+    color_jitter:
+      brightness_min: 0.85
+      brightness_max: 1.15
+      contrast_min: 0.9
+      contrast_max: 1.15

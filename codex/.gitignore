@@ -1,0 +1,9 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+
+results/runs/
+results/reports/
+data/c2/new_*inpaint/
+data/c2/new_*inpaint_masks/

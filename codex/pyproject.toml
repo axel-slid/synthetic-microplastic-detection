@@ -1,0 +1,11 @@
+[project]
+name = "microplastic-benchmark"
+version = "0.1.0"
+description = "Benchmark harness for microplastic synthetic generation and segmentation experiments."
+requires-python = ">=3.10"
+
+[tool.ruff]
+line-length = 100
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

@@ -1,0 +1,102 @@
+project:
+  name: microplastic_gpu1_sd_gan
+  seed_values: [13, 37, 101]
+  image_size: 512
+  num_workers: 4
+  device: cuda
+
+paths:
+  data_root: data
+  results_root: results
+  c1_imgs: data/c1/imgs
+  c1_masks: data/c1/masks
+  c1_masks_dilated: data/c1/masks_dilated
+  c2_imgs: data/c2/imgs
+  c3_imgs: data/c3/imgs
+  c3_masks: data/c3/masks
+  manifests: results/manifests/gpu1_sd_gan
+  runs: results/runs/gpu1_sd_gan
+  reports: results/reports/gpu1_sd_gan
+
+c3_clean:
+  exclude_primary:
+    - "006.png"
+    - "026.png"
+    - "088.png"
+  leaked_c2_backgrounds:
+    - "0481.png"
+    - "0732.png"
+
+training:
+  batch_size: 8
+  epochs: 80
+  lr: 0.0001
+  weight_decay: 0.00001
+  patience: 15
+  threshold: 0.5
+  amp: true
+  synthetic_train_fraction: 0.8
+  synthetic_val_fraction: 0.2
+
+generation_conditions:
+  - name: gpu1_sd_inpaint
+    kind: generated_folder
+    imgs: data/c2/gpu1_sd_inpaint
+    masks: data/c2/gpu1_sd_inpaint_masks
+  - name: gpu1_gan_curated
+    kind: paired_folder
+    imgs: data/c2/gpu1_gan_curated
+    masks: data/c2/gpu1_gan_curated_masks
+
+segmentation_models:
+  - name: smp_unet_resnet34
+    family: semantic
+    library: smp
+    architecture: Unet
+    encoder: resnet34
+  - name: smp_unetpp_effb4
+    family: semantic
+    library: smp
+    architecture: UnetPlusPlus
+    encoder: efficientnet-b4
+  - name: smp_deeplabv3plus_resnet50
+    family: semantic
+    library: smp
+    architecture: DeepLabV3Plus
+    encoder: resnet50
+  - name: smp_fpn_effb3
+    family: semantic
+    library: smp
+    architecture: FPN
+    encoder: efficientnet-b3
+  - name: monai_unet
+    family: semantic
+    library: monai
+
+generation_methods:
+  gpu1_sd_inpaint:
+    model_id: diffusers/stable-diffusion-xl-1.0-inpainting-0.1
+    prompt: "a realistic microscope ecological water sample containing one visible translucent colored microplastic fiber or fragment inside the masked region, natural debris, sharp focus"
+    negative_prompt: "cartoon, illustration, fake texture, text, watermark, blurry, unchanged background, empty mask, pipe, thick tube"
+    guidance_scale: 7.0
+    steps: 40
+    strength: 0.99
+    seed_object: true
+    seeded_object_mix: 0.65
+    diffusion_blend: true
+    diffusion_mask_mode: full
+    inpaint_mask_dilation_px: 4
+    reject_low_change: true
+    min_masked_mad: 12.0
+    min_changed_px_fraction: 0.35
+    min_background_masked_mad: 20.0
+    min_background_changed_px_fraction: 0.50
+    max_generation_attempt_multiplier: 12
+    insertion_area_fraction: [0.006, 0.05]
+    object_opacity: 0.95
+    alpha_feather_radius: 0.7
+    color_jitter:
+      brightness_min: 0.85
+      brightness_max: 1.15
+      contrast_min: 0.9
+      contrast_max: 1.15

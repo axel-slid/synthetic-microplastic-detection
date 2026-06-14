@@ -1,0 +1,85 @@
+project:
+  name: microplastic_stable_diffusion_data_ablation
+  seed_values: [13, 37, 101]
+  image_size: 512
+  num_workers: 4
+  device: cuda
+
+paths:
+  data_root: data
+  results_root: results
+  c1_imgs: data/c1/imgs
+  c1_masks: data/c1/masks
+  c1_masks_dilated: data/c1/masks_dilated
+  c2_imgs: data/c2/imgs
+  c3_imgs: data/c3/imgs
+  c3_masks: data/c3/masks
+  manifests: results/manifests/sd_ablation
+  runs: results/runs/sd_ablation
+  reports: results/reports/sd_ablation
+
+c3_clean:
+  exclude_primary:
+    - "006.png"
+    - "026.png"
+    - "088.png"
+  leaked_c2_backgrounds:
+    - "0481.png"
+    - "0732.png"
+
+training:
+  batch_size: 8
+  epochs: 80
+  lr: 0.0001
+  weight_decay: 0.00001
+  patience: 15
+  threshold: 0.5
+  amp: true
+  synthetic_train_fraction: 0.8
+  synthetic_val_fraction: 0.2
+
+generation_conditions:
+  - name: pure_real
+    kind: manifest_only
+  - name: real_plus_inpainting
+    kind: manifest_only
+  - name: real_plus_synthetic
+    kind: manifest_only
+  - name: pure_synthetic
+    kind: manifest_only
+  - name: pure_inpainting
+    kind: manifest_only
+
+segmentation_models:
+  - name: smp_unet_resnet34
+    family: semantic
+    library: smp
+    architecture: Unet
+    encoder: resnet34
+  - name: smp_unetpp_effb4
+    family: semantic
+    library: smp
+    architecture: UnetPlusPlus
+    encoder: efficientnet-b4
+  - name: smp_deeplabv3plus_resnet50
+    family: semantic
+    library: smp
+    architecture: DeepLabV3Plus
+    encoder: resnet50
+  - name: smp_fpn_effb3
+    family: semantic
+    library: smp
+    architecture: FPN
+    encoder: efficientnet-b3
+  - name: monai_unet
+    family: semantic
+    library: monai
+  - name: segformer_b2
+    family: semantic
+    library: transformers
+    model_id: nvidia/segformer-b2-finetuned-ade-512-512
+  - name: yolo11m_seg
+    family: yolo
+    weights: yolo11m-seg.pt
+
+generation_methods: {}

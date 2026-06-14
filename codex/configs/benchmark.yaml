@@ -1,0 +1,142 @@
+project:
+  name: microplastic_generation_segmentation_benchmark
+  seed_values: [13, 37, 101]
+  image_size: 512
+  num_workers: 4
+  device: cuda
+
+paths:
+  data_root: data
+  results_root: results
+  c1_imgs: data/c1/imgs
+  c1_masks: data/c1/masks
+  c1_masks_dilated: data/c1/masks_dilated
+  c2_imgs: data/c2/imgs
+  c3_imgs: data/c3/imgs
+  c3_masks: data/c3/masks
+  manifests: results/manifests
+  runs: results/runs
+  reports: results/reports
+
+c3_clean:
+  exclude_primary:
+    - "006.png"  # image/mask dimension mismatch
+    - "026.png"  # pixel-identical to c2/imgs/0481.png
+    - "088.png"  # near duplicate of c2/imgs/0732.png
+  leaked_c2_backgrounds:
+    - "0481.png"
+    - "0732.png"
+
+training:
+  batch_size: 8
+  epochs: 80
+  lr: 0.0001
+  weight_decay: 0.00001
+  patience: 15
+  threshold: 0.5
+  amp: true
+  synthetic_train_fraction: 0.8
+  synthetic_val_fraction: 0.2
+
+generation_conditions:
+  - name: baseline_c1
+    kind: c1_only
+  - name: legacy_sd
+    kind: paired_folder
+    imgs: data/c2/gen_sd
+    masks: data/c2/gen_sd_masks
+  - name: legacy_gan
+    kind: paired_folder
+    imgs: data/c2/gen_gan
+    masks: data/c2/gen_gan_masks
+  - name: legacy_gen1
+    kind: paired_folder
+    imgs: data/c2/gen_imgs_1
+    masks: data/c2/gen_masks_1
+  - name: legacy_c2_gen
+    kind: paired_folder
+    imgs: data/c2/c2_gen
+    masks: data/c2/c2_gen_mask
+  - name: new_sdxl_inpaint
+    kind: generated_folder
+    imgs: data/c2/new_sdxl_inpaint
+    masks: data/c2/new_sdxl_inpaint_masks
+  - name: new_flux_inpaint
+    kind: generated_folder
+    imgs: data/c2/new_flux_inpaint
+    masks: data/c2/new_flux_inpaint_masks
+
+segmentation_models:
+  - name: smp_unet_resnet34
+    family: semantic
+    library: smp
+    architecture: Unet
+    encoder: resnet34
+  - name: smp_unetpp_effb4
+    family: semantic
+    library: smp
+    architecture: UnetPlusPlus
+    encoder: efficientnet-b4
+  - name: smp_deeplabv3plus_resnet50
+    family: semantic
+    library: smp
+    architecture: DeepLabV3Plus
+    encoder: resnet50
+  - name: smp_fpn_effb3
+    family: semantic
+    library: smp
+    architecture: FPN
+    encoder: efficientnet-b3
+  - name: monai_unet
+    family: semantic
+    library: monai
+  - name: segformer_b2
+    family: semantic
+    library: transformers
+    model_id: nvidia/segformer-b2-finetuned-ade-512-512
+  - name: yolo11m_seg
+    family: yolo
+    weights: yolo11m-seg.pt
+
+generation_methods:
+  new_sdxl_inpaint:
+    model_id: diffusers/stable-diffusion-xl-1.0-inpainting-0.1
+    prompt: "a realistic microscope ecological water sample containing a microplastic fiber, natural debris, sharp focus"
+    negative_prompt: "cartoon, illustration, fake texture, text, watermark, blurry"
+    guidance_scale: 7.0
+    steps: 30
+    seed_object: true
+    diffusion_blend: false
+    insertion_area_fraction: [0.003, 0.035]
+    object_opacity: 0.95
+    alpha_feather_radius: 0.7
+    color_jitter:
+      brightness_min: 0.85
+      brightness_max: 1.15
+      contrast_min: 0.9
+      contrast_max: 1.15
+  new_flux_inpaint:
+    model_id: black-forest-labs/FLUX.1-Fill-dev
+    fallback_model_id: diffusers/stable-diffusion-xl-1.0-inpainting-0.1
+    prompt: "a realistic microscope ecological water sample containing a microplastic fiber, natural debris, sharp focus"
+    negative_prompt: "cartoon, illustration, fake texture, text, watermark, blurry"
+    guidance_scale: 3.5
+    steps: 28
+    seed_object: true
+    diffusion_blend: false
+    insertion_area_fraction: [0.003, 0.035]
+    object_opacity: 0.95
+    alpha_feather_radius: 0.7
+    color_jitter:
+      brightness_min: 0.85
+      brightness_max: 1.15
+      contrast_min: 0.9
+      contrast_max: 1.15
+  sd_new_microplastic_text2image:
+    model_id: stabilityai/stable-diffusion-xl-base-1.0
+    fallback_model_id: runwayml/stable-diffusion-v1-5
+    output_imgs: data/c2/sd_new_microplastic_text2image
+    prompt: "a realistic optical microscope image of an environmental water sample containing newly generated microplastic fibers, fragments, and films, natural sediment, organic debris, bubbles, brightfield microscopy, sharp focus"
+    negative_prompt: "cartoon, illustration, painting, fake texture, text, watermark, blurry, macro photograph, 3d render"
+    guidance_scale: 7.0
+    steps: 35

@@ -1,30 +1,53 @@
-# Microplastic Image Explorer Dataset Tools
+# Synthetic Microplastic Detection
 
-Code for downloading the OpenAnalysis / Moore Institute Microplastic Image
-Explorer dataset, filtering its metadata, and visualizing the morphology of
-records that include particle-size metadata.
+This repository contains tools and experiment code for microplastic image
+metadata exploration, synthetic data generation, and segmentation benchmarking.
 
-Dataset source: <https://www.openanalysis.org/microplastic_image_explorer/>
+The repository is source-focused. Large local datasets, generated image batches,
+training runs, model checkpoints, and compiled artifacts are intentionally
+excluded from git.
 
-The full image dataset is about 2.53 GB and is downloaded into `data/`, which is
-ignored by git.
+## Repository Layout
+
+- `scripts/`: dataset download, metadata filtering, visualization, and figure helpers.
+- `docs/`: dataset notes and generated documentation assets.
+- `codex/microplastic_benchmark/`: reusable benchmark package for data loading,
+  generation, model construction, training, metrics, and evaluation.
+- `codex/configs/`: benchmark experiment matrices and model settings.
+- `codex/scripts/`: benchmark orchestration, training, evaluation, and reporting scripts.
+- `code/`: earlier stable diffusion, GAN, preprocessing, and segmentation scripts.
+- `tests/`: smoke tests for the Stable Diffusion training pipeline.
+- `images/` and `overleaf_microplastic_project/`: paper figures and manuscript source.
+- `model_settings_full.txt`: consolidated Stable Diffusion and segmentation model settings.
 
 ## Install
+
+Basic metadata tooling:
 
 ```bash
 python -m pip install -r requirements.txt
 ```
 
-## Download
+Benchmark package:
 
-Metadata only:
+```bash
+python -m pip install -r codex/requirements.txt
+python -m pip install -e codex
+```
+
+GPU training workflows require CUDA-compatible PyTorch plus the model/data
+assets referenced by the configs.
+
+## Dataset Utilities
+
+Download metadata only:
 
 ```bash
 python scripts/download_image_explorer.py \
   --output-dir data/microplastic_image_explorer
 ```
 
-Metadata plus all 10,182 images:
+Download metadata plus images:
 
 ```bash
 python scripts/download_image_explorer.py \
@@ -33,7 +56,7 @@ python scripts/download_image_explorer.py \
   --workers 24
 ```
 
-## Visualize Size-labeled Morphology
+Visualize size-labeled morphology records:
 
 ```bash
 python scripts/visualize_metadata.py \
@@ -42,77 +65,50 @@ python scripts/visualize_metadata.py \
   --output-dir docs/assets
 ```
 
-This creates:
+## Benchmark Workflow
 
-- particle-size metadata availability
-- morphology counts among records with particle-size metadata
-- one montage for each morphology among records with particle-size metadata
-
-## 1. Particle-size Metadata Availability
-
-![Particle-size metadata availability](docs/assets/size_availability.png)
-
-## 2. Morphologies Among Records With Particle-size Metadata
-
-![Morphologies among records with particle-size metadata](docs/assets/size_labeled_morphology_counts.png)
-
-## 3. Morphology Montages for Size-labeled Records
-
-### Fiber
-
-![Fiber montage](docs/assets/morphology_montage_fiber.jpg)
-
-### Fragment
-
-![Fragment montage](docs/assets/morphology_montage_fragment.jpg)
-
-### Sphere
-
-![Sphere montage](docs/assets/morphology_montage_sphere.jpg)
-
-### Film
-
-![Film montage](docs/assets/morphology_montage_film.jpg)
-
-### Pellet
-
-![Pellet montage](docs/assets/morphology_montage_pellet.jpg)
-
-### Blank Morphology
-
-![Blank morphology montage](docs/assets/morphology_montage_blank.jpg)
-
-### Foam
-
-![Foam montage](docs/assets/morphology_montage_foam.jpg)
-
-### Other
-
-![Other morphology montage](docs/assets/morphology_montage_other.jpg)
-
-### Fiber Bundle
-
-![Fiber bundle montage](docs/assets/morphology_montage_fiber_bundle.jpg)
-
-## Filter Metadata
-
-Example: filter fiber records with particle-size metadata:
+From `codex/`:
 
 ```bash
-python scripts/filter_metadata.py \
-  --metadata data/microplastic_image_explorer/metadata/image_metadata.csv \
-  --has-size \
-  --morphology fiber \
-  --output outputs/size_labeled_fibers.csv \
-  --write-urls outputs/size_labeled_fiber_urls.txt
+python scripts/validate_data.py --config configs/benchmark.yaml
+python scripts/prepare_manifests.py --config configs/benchmark.yaml
+python scripts/plan_runs.py --config configs/benchmark.yaml --available-only
+python scripts/smoke_test.py --config configs/benchmark.yaml
 ```
 
-## Scale Note
+Train a semantic segmentation run:
 
-The `size` field is particle-size metadata, not image pixel calibration. It is
-sparse and mixed-format. Do not assume the dataset provides microns-per-pixel
-scale for every image.
+```bash
+python scripts/train_segmenter.py \
+  --config configs/benchmark.yaml \
+  --run-id baseline_c1__monai_unet__seed13
+```
 
-Read [docs/microplastic_image_explorer_metadata.md](docs/microplastic_image_explorer_metadata.md)
-for details on particle-size metadata, magnification fields in supporting
-tables, and safe wording for papers.
+Train a YOLO segmentation run:
+
+```bash
+python scripts/train_yolo_segmenter.py \
+  --config configs/benchmark.yaml \
+  --run-id baseline_c1__yolo11m_seg__seed13 \
+  --weights yolo11m-seg.pt
+```
+
+Evaluate completed PyTorch semantic checkpoints:
+
+```bash
+python scripts/evaluate_registry.py --config configs/benchmark.yaml
+python scripts/aggregate_results.py
+```
+
+## Data And Artifact Policy
+
+The following are ignored because they are large or machine-specific:
+
+- `data/`, `codex/data/`
+- `generated/`
+- `codex/results/`, `codex/runs/`
+- checkpoints and weights such as `*.pt`, `*.pth`, `*.ckpt`, `*.safetensors`
+- split datasets, generated samples, logs, caches, Office exports, and compiled PDFs
+
+Use the scripts and configs in this repo to recreate datasets, runs, and figures
+in a local workspace.

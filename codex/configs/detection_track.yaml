@@ -1,0 +1,81 @@
+project:
+  name: microplastic_detection_synthetic_ablation
+  seed_values: [13, 37, 101]
+  image_size: 512
+  num_workers: 4
+  device: cuda
+
+paths:
+  data_root: data
+  results_root: results
+  c1_imgs: data/c1/imgs
+  c1_masks: data/c1/masks
+  c1_masks_dilated: data/c1/masks_dilated
+  c2_imgs: data/c2/imgs
+  c3_imgs: data/c3/imgs
+  c3_masks: data/c3/masks
+  manifests: results/manifests/detection_track
+  runs: results/runs/detection_track
+  reports: results/reports/detection_track
+
+c3_clean:
+  exclude_primary:
+    - "006.png"
+    - "026.png"
+    - "088.png"
+  leaked_c2_backgrounds:
+    - "0481.png"
+    - "0732.png"
+
+training:
+  batch_size: 8
+  epochs: 80
+  lr: 0.0001
+  weight_decay: 0.00001
+  patience: 15
+  threshold: 0.5
+  amp: true
+  synthetic_train_fraction: 0.8
+  synthetic_val_fraction: 0.2
+
+generation_conditions:
+  - name: baseline_c1
+    kind: c1_only
+  - name: legacy_sd
+    kind: paired_folder
+    imgs: data/c2/gen_sd
+    masks: data/c2/gen_sd_masks
+  - name: legacy_gan
+    kind: paired_folder
+    imgs: data/c2/gen_gan
+    masks: data/c2/gen_gan_masks
+  - name: legacy_gen1
+    kind: paired_folder
+    imgs: data/c2/gen_imgs_1
+    masks: data/c2/gen_masks_1
+  - name: legacy_c2_gen
+    kind: paired_folder
+    imgs: data/c2/c2_gen
+    masks: data/c2/c2_gen_mask
+  - name: c2_sdxl_inpaint
+    kind: generated_folder
+    imgs: data/c2/c2_sdxl_inpaint
+    masks: data/c2/c2_sdxl_inpaint_masks
+  - name: c2_flux_inpaint
+    kind: generated_folder
+    imgs: data/c2/c2_flux_inpaint
+    masks: data/c2/c2_flux_inpaint_masks
+  - name: c2_sd2_inpaint
+    kind: generated_folder
+    imgs: data/c2/c2_sd2_inpaint
+    masks: data/c2/c2_sd2_inpaint_masks
+  - name: c2_sd2_fiber_inpaint
+    kind: generated_folder
+    imgs: data/c2/c2_sd2_fiber_inpaint
+    masks: data/c2/c2_sd2_fiber_inpaint_masks
+  - name: c2_sdxl_texture_inpaint
+    kind: generated_folder
+    imgs: data/c2/c2_sdxl_texture_inpaint
+    masks: data/c2/c2_sdxl_texture_inpaint_masks
+
+generation_methods: {}

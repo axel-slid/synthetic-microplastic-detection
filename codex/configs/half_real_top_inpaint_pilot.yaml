@@ -1,0 +1,60 @@
+project:
+  name: microplastic_half_real_top_inpaint_pilot
+  seed_values: [13]
+  image_size: 512
+  num_workers: 4
+  device: cuda
+
+paths:
+  data_root: data
+  results_root: results
+  c1_imgs: data/c1/imgs
+  c1_masks: data/c1/masks
+  c1_masks_dilated: data/c1/masks_dilated
+  c2_imgs: data/c2/imgs
+  c3_imgs: data/c3/imgs
+  c3_masks: data/c3/masks
+  manifests: results/manifests/half_real_top_inpaint_pilot
+  runs: results/runs/half_real_top_inpaint_pilot
+  reports: results/reports/half_real_top_inpaint_pilot
+
+c3_clean:
+  exclude_primary:
+    - "006.png"
+    - "026.png"
+    - "088.png"
+  leaked_c2_backgrounds:
+    - "0481.png"
+    - "0732.png"
+
+training:
+  batch_size: 8
+  epochs: 80
+  lr: 0.0001
+  weight_decay: 0.00001
+  patience: 15
+  threshold: 0.5
+  amp: true
+  synthetic_train_fraction: 0.5
+  synthetic_val_fraction: 0.5
+
+generation_conditions:
+  - name: half_real_top_inpaint
+    kind: manifest_only
+
+segmentation_models:
+  - name: smp_unet_resnet34
+    family: semantic
+    library: smp
+    architecture: Unet
+    encoder: resnet34
+  - name: smp_unetpp_effb4
+    family: semantic
+    library: smp
+    architecture: UnetPlusPlus
+    encoder: efficientnet-b4
+  - name: smp_deeplabv3plus_resnet50
+    family: semantic
+    library: smp
+    architecture: DeepLabV3Plus
+    encoder: resnet50

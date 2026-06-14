@@ -1,0 +1,62 @@
+project:
+  name: microplastic_c3_object_aug_small
+  seed_values: [13]
+  image_size: 512
+  num_workers: 4
+  device: cuda
+
+paths:
+  data_root: data
+  results_root: results
+  c1_imgs: data/c1/imgs
+  c1_masks: data/c1/masks
+  c1_masks_dilated: data/c1/masks_dilated
+  c2_imgs: data/c2/imgs
+  c3_imgs: data/c3/imgs
+  c3_masks: data/c3/masks
+  manifests: results/diagnostics/c3_object_aug_small/manifests
+  runs: results/diagnostics/c3_object_aug_small/runs
+  reports: results/diagnostics/c3_object_aug_small/reports
+
+c3_clean:
+  exclude_primary:
+    - "006.png"
+    - "026.png"
+    - "088.png"
+  leaked_c2_backgrounds:
+    - "0481.png"
+    - "0732.png"
+
+training:
+  batch_size: 6
+  epochs: 80
+  lr: 0.0001
+  weight_decay: 0.00001
+  patience: 15
+  threshold: 0.5
+  amp: true
+  synthetic_train_fraction: 1.0
+  synthetic_val_fraction: 0.0
+
+generation_conditions:
+  - name: c3_object_aug
+    kind: generated_folder
+    imgs: results/diagnostics/object_seeded_small/generated/imgs
+    masks: results/diagnostics/object_seeded_small/generated/masks
+
+segmentation_models:
+  - name: smp_unet_resnet34
+    family: semantic
+    library: smp
+    architecture: Unet
+    encoder: resnet34
+  - name: smp_unetpp_effb4
+    family: semantic
+    library: smp
+    architecture: UnetPlusPlus
+    encoder: efficientnet-b4
+  - name: smp_deeplabv3plus_resnet50
+    family: semantic
+    library: smp
+    architecture: DeepLabV3Plus
+    encoder: resnet50

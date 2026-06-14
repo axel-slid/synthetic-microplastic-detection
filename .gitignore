@@ -17,19 +17,44 @@ env/
 .ipynb_checkpoints/
 *.ipynb
 
-# Data (all image data — too large for git)
+# Data (all image data is too large for git)
 data/
+codex/data/
 
 # Misc large/temp directories
 water_quality_temp/
-code/
+generated/
+codex/results/
+codex/runs/
+codex/locks/
 
 # Model checkpoints
 checkpoints/
+**/checkpoints/
+**/weights/
+*.pt
+*.pth
+*.ckpt
+*.safetensors
+*.bin
 
 # Pipeline outputs
 outputs/
 logs/
+**/logs/
+**/viz/
+code/**/figures/
+code/**/comparison_output/
+codex/codex/results/
+
+# Training data and generated samples nested under source directories
+**/split_data/
+**/gen_*/
+**/*generated*/
+**/model_text_dilated/
+**/model_old/
+**/model/
+**/epoch-*/
 
 # OS
 .DS_Store
@@ -52,3 +77,8 @@ Thumbs.db
 *.synctex.gz
 *.toc
 *.pdf
+
+# Office/export artifacts
+*.docx
+*.xlsx
+*.zip
