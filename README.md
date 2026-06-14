@@ -50,6 +50,10 @@ assets referenced by the configs.
 
 ## Dataset Utilities
 
+Primary project data are available from Harvard Dataverse:
+
+<https://dataverse.harvard.edu/dataverse/Microplastic-Segmentation-GAN/>
+
 Download metadata only:
 
 ```bash
